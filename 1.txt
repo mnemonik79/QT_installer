@@ -1,0 +1,4 @@
+set mysql = c:\Program Files\MySQL\MySQL Server 8.0\
+cd C:\Qt\Qt5.9.7\5.9.7\Src\qtbase\src\plugins\sqldrivers\mysql
+set mysql = c:\Program Files\MySQL\Connector C++ 8.0\
+qmake "INCLUDEPATH+=%mysql%\\include" "LIBS+=%mysql%\\lib\\libmysql.lib" -o Makefile mysql.pro
