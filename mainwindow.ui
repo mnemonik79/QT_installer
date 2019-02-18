@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Проверка верси</string>
+   <string>Auto</string>
   </property>
   <property name="windowIcon">
    <iconset resource="try.qrc">
@@ -31,6 +31,9 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QPushButton" name="pushButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -44,6 +47,9 @@
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>140</x>
@@ -83,6 +89,9 @@
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit_2">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>139</x>
@@ -109,6 +118,9 @@
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit_3">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>140</x>
@@ -122,6 +134,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_2">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -135,6 +150,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_3">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -161,6 +179,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_4">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>134</x>
@@ -170,10 +191,13 @@
      </rect>
     </property>
     <property name="text">
-     <string>Архивируем</string>
+     <string>Обновить</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_5">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>134</x>
@@ -187,6 +211,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_6">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>134</x>
@@ -200,6 +227,9 @@
     </property>
    </widget>
    <widget class="QCheckBox" name="checkBox">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -211,8 +241,14 @@
     <property name="text">
      <string>Автоматическое обновление</string>
     </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
    </widget>
    <widget class="QPushButton" name="pushButton_7">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -226,6 +262,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_8">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>134</x>

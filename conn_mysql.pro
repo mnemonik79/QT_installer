@@ -27,14 +27,17 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    downloader.cpp
+    downloader.cpp \
+    messeg.cpp
 
 HEADERS += \
         mainwindow.h \
-    downloader.h
+    downloader.h \
+    messeg.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    messeg.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

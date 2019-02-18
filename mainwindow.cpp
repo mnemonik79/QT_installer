@@ -1,9 +1,11 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include"downloader.h"
 #include<QMessageBox>
 #include <QDesktopWidget>
+#include "messeg.h"
 
+//extern QString Version;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -11,9 +13,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
    //  this->setGeometry(x(),y(),100,100);
-urlline="HTTPS:\\www.test.ru\text1.txt";
+//urlline="HTTPS:\\www.test.ru\text1.txt";
     //Проверяем признак обновления
-
+//Flag=0;
     if (ui->checkBox->isChecked())
     {
       aut=1;
@@ -36,17 +38,41 @@ urlline="HTTPS:\\www.test.ru\text1.txt";
     this -> showTrayIcon();
 
 /*
- Монтируем таймер
-*/
+ Слот передачи данных
+*/       myform = new messeg;
 
+
+
+ /* Монтируем таймер     */
        tmr = new QTimer(this); // Создаем объект класса QTimer и передаем адрес переменной
-       tmr->setInterval(10000); // Задаем интервал таймера
+       tmr->setInterval(100000); // Задаем интервал таймера
+        connect(tmr, SIGNAL(timeout()), this, SLOT(on_pushButton_clicked()));
+        connect(tmr, SIGNAL(timeout()), this, SLOT(on_pushButton_3_clicked()));
+   Flag==3;
+   //  {
+   //    connect(tmr, SIGNAL(timeout()), this, SLOT(on_pushButton_5_clicked()));
+     //}
+      tmr1 = new QTimer(this); // Создаем объект класса QTimer и передаем адрес переменной// проверка запущенного приложения если нет копирование
+      tmr1->setInterval(150000);
+
+
+      // Задаем интервал таймера
+
+      /*
+       Проверяем файл !!! основной и в загрузчике!//
+        */
+
+     connect(tmr1, SIGNAL(timeout()), this, SLOT(on_pushButton_4_clicked()));
+      //  ui->pushButton_3->click();
+     //     ui->pushButton_5->click();
+     //       ui->pushButton_4->click();
      if (aut == 1)
      {
-       connect(tmr, SIGNAL(timeout()), this, SLOT(on_pushButton_clicked())); // Подключаем сигнал таймера к нашему слоту
+      // connect(tmr, SIGNAL(timeout()), this, SLOT(on_pushButton_clicked())); // Подключаем сигнал таймера к нашему слоту
       //  connect(tmr, SIGNAL(timeout()), this, SLOT(on_pushButton_3_clicked()));
        //connect(tmr, SIGNAL(timeout()), this, SLOT(on_pushButton_2_clicked()));
               tmr->start();
+              tmr1->start();
      }
 }
 
@@ -76,7 +102,7 @@ db = QSqlDatabase::addDatabase("QMYSQL");
            {
                qDebug("Connected!");
 
-         ui->pushButton_3->click();
+
            }
            else
            {
@@ -116,11 +142,64 @@ db.close();
 
 void MainWindow::on_pushButton_3_clicked()
 {
+
     QSqlQuery query("SELECT * FROM client ");
      query.next();
-     ui->label_4->setText(query.value(4).toString());
+
+     id=query.value(0).toInt();
+//QString s1="UPDATE client SET versionclient = '102' WHERE id = "+query.value(0).toString();
+//qDebug() << s1;
+     //query.exec(s1);
+ //   qDebug() << id;
+  //   ui->label_4->setText(query.value(4).toString());
+urlFile=query.value(5).toString();
+//urlPuth=query.value(10).toString();
+
+    urlPuth=QDir::currentPath()+"/";
+   // QString tmp1=QDir::current().absoluteFilePath();
+//QFile::exists(urlPuth+"settings.conf");
+if (! QFile::exists(urlPuth+"settings.conf")){
+   // saveLog("Не найден файл с Настройками!");
+    QMessageBox::warning(0,"Ошибка запуска", "Не найден файл settings.conf !");
+    return;
+
 }
 
+
+QSettings settings( urlPuth+"settings.conf", QSettings::IniFormat );
+VC = settings.value("Goods_input/version").toString();
+
+
+//on_pushButton_5_clicked();
+ if (query.value(4).toString()!=query.value(6).toString())
+{
+Flag=0;
+
+ // qDebug() << VC;
+//  ui->label_4->setText(VC+" Ваша версия ");
+on_pushButton_5_clicked();
+qDebug() << query.value(4).toString() << query.value(6).toString() <<"ОБНОВЛЯЕМ ТУ" ;
+}
+else
+{
+   Flag=3;
+}
+ if (query.value(4).toString()!=query.value(11).toString())
+{
+Flag=1;
+on_pushButton_5_clicked();
+qDebug() << query.value(4).toInt() << "ОБНОВЛЯЕМ KK" ;
+}
+else
+{
+    Flag=3;
+}
+  // QString Ver = settings->value("database/path").toString();
+ //Ver="0";
+  // QSettings settings("MySoft", "Star Runner");
+  // qDebug() << VC;
+   ui->label_4->setText(VC+" Ваша версия ");
+}
 void MainWindow::showTrayIcon()
 {
     // Создаём экземпляр класса и задаём его свойства...
@@ -190,15 +269,86 @@ void MainWindow::changeEvent(QEvent *event)
 
 void MainWindow::on_pushButton_4_clicked()
 {
- QString   path1=QDir::currentPath()+"/1.txt";
-  QString   path2=QDir::currentPath()+"/arhiv/copy1.txt";
- qDebug() << path1;
+
+//file_copy="Goods_Input.exe";
+    if (Flag==0)
+    {
+      file_copy="Goods_Input.exe";
+    }
+    if (Flag==1)
+    {
+      file_copy="RR_Cash_Atol.exe";
+    }
+
+ QString   path1=urlPuth+"download/"+file_copy;
+  QString   path2=urlPuth+file_copy;
+  QString   path3=urlPuth+"arhiv/copy_"+ file_copy;
+
+
+      qDebug() << path1;
+  qDebug() << path2;
+   qDebug() << path3;
  QFile MyFile(path1);
  QFile destFile("\1.txt");
-//QFile::copy("E:\1.txt", "E:\copy_1.text");
-bool result = QFile::copy(path1, path2);
-    qDebug() << result;
+ urlPuth=QDir::currentPath()+"/";
 
+// QString executable = QDir::currentPath()+"/"+file_copy;
+// QProcess *process = new QProcess(this);
+ //process->start(executable, QStringList());
+
+ // some code
+
+// if ( process->state() == QProcess::NotRunning )
+ //{
+     // do something
+
+
+//QFile::copy("E:\1.txt", "E:\copy_1.text");
+
+
+     int FileRaz1=QFile(path3).size();
+  qDebug () << FileRaz1;
+  if ( QFile::exists(path1))
+    {
+  QFile(path3).remove();
+     QFile::copy(path2, path3);
+     bool result1 = QFile::copy(path1, path2);
+  if (result1 == true)
+  {
+     QFile(path3).remove();
+  }
+    QFile(path2).remove();
+     bool result = QFile::copy(path1, path2);
+  if (result == true)
+  {
+     QFile(path1).remove();
+   }
+     //  QFile::copy(path1, path3);
+
+    qDebug() << result;
+    path1=urlPuth+"download/"+file_copy;
+       path2=urlPuth+file_copy;
+        path3=urlPuth+"arhiv/copy_"+ file_copy;
+    qDebug() << path1;
+// QFile  MyFile(path1);
+       urlPuth=QDir::currentPath()+"/";
+      }
+   // QString executable = QDir::currentPath()+"/"+file_copy;
+   // QProcess *process = new QProcess(this);
+    //process->start(executable, QStringList());
+
+    // some code
+
+   // if ( process->state() == QProcess::NotRunning )
+    //{
+        // do something
+
+
+   //QFile::copy("E:\1.txt", "E:\copy_1.text");
+
+
+
+//};
 }
 
 void MainWindow::on_checkBox_clicked()
@@ -206,13 +356,92 @@ void MainWindow::on_checkBox_clicked()
     if(ui->checkBox->isChecked())
     {
     aut=1;
+    qDebug() << "Пароль верен";
+   ui->pushButton->setEnabled(false);
+   ui->pushButton_2->setEnabled(false);
+   ui->pushButton_3->setEnabled(false);
+   ui->pushButton_4->setEnabled(false);
+   ui->pushButton_5->setEnabled(false);
+   ui->pushButton_6->setEnabled(false);
+   ui->pushButton_7->setEnabled(false);
+   ui->pushButton_8->setEnabled(false);
+   ui->lineEdit->setEnabled(false);
+   ui->lineEdit_2->setEnabled(false);
+   ui->lineEdit_3->setEnabled(false);
+
+  // connect(tmr, SIGNAL(timeout()), this, SLOT(on_pushButton_clicked())); // Подключаем сигнал таймера к нашему слоту
+  //  connect(tmr, SIGNAL(timeout()), this, SLOT(on_pushButton_3_clicked()));
+   //connect(tmr, SIGNAL(timeout()), this, SLOT(on_pushButton_2_clicked()));
+          tmr->start();
+          tmr1->start();
     }
-    else {aut=0;}
+    else {
+       aut=0;
+          tmr->stop();
+          tmr1->stop();
+
+    }
 }
 
+// Процедура обработки обращения к запуску функции загрузки файлоов
 void MainWindow::on_pushButton_5_clicked()
-{   QString   path2=QDir::currentPath()+"/download/";
+{
+    QString  path2;
+      path2=urlPuth+"download/";
+      qDebug() << Flag << " Результат флага";
+ // Загружаем Товароучетку ....
+      if (Flag==0)
+    {
+   //  path2=urlPuth+"download/";
+      //if (!QFile(mtl_file).exists()) return false
+   if (QFile(QDir::currentPath()+"/"+"Goods_Input.exe").exists())
+  {       QFile(QDir::currentPath()+"/"+"Goods_Input.exe").close();
+          file_copy="Goods_Input.exe";
+          urlline="http://cd.oe22.ru/iitron/Goods_Input.exe";
+            //+urlFile;
+            qDebug() <<   urlline << path2;
     m_downloader.get(path2, urlline);
+// connect(ui->pushButton_5, SIGNAL(clicked(urlPuth)), myform, SLOT(GetData(urlPuth)));
+    connect (restoreAction, SIGNAL(triggered()), this, SLOT(showNormal()));
+    ui->pushButton_4->setEnabled(true);
+    messeg *w = new messeg;
+    w->show();
+      QSqlQuery query;
+      QString s1="UPDATE client SET versionclient = '"+VC+"' WHERE id = "+QVariant(id).toString();
+    qDebug() << s1;
+      query.exec(s1);
+      }
+    }
+  // QTime timer;
+   //timer.start () ;
+
+  /* for(;timer.elapsed() < 100000;)
+   {
+       qApp->processEvents(0);
+   }*/
+ // Загружаем КК ....
+   if (Flag==1)
+   {
+
+      if (QFile(QDir::currentPath()+"/"+"RR_Cash_Atol.exe").exists())
+   {      QFile(QDir::currentPath()+"/"+"RR_Cash_Atol.exe").close();
+          file_copy="RR_Cash_Atol.exe";
+          urlline="http://cd.oe22.ru/iitron/RR_Cash_Atol.exe";
+            //+urlFile;
+            qDebug() <<   urlline << path2 << "ГДЕ!!!!!";
+    m_downloader.get(path2, urlline);
+// connect(ui->pushButton_5, SIGNAL(clicked(urlPuth)), myform, SLOT(GetData(urlPuth)));
+    connect (restoreAction, SIGNAL(triggered()), this, SLOT(showNormal()));
+    ui->pushButton_4->setEnabled(true);
+    messeg *w = new messeg;
+    w->show();
+      QSqlQuery query;
+      QString s1="UPDATE client SET versionserv = '"+VC+"' WHERE id = "+QVariant(id).toString();
+    qDebug() << s1;
+      query.exec(s1);
+      }
+}
+ // query.exec("UPDATE client SET versionclient = '102' WHERE id = 84");
 }
 
 void MainWindow::on_pushButton_6_clicked()
@@ -275,4 +504,28 @@ void MainWindow::on_pushButton_7_clicked()
         }
         QMessageBox::information(0, "Information", "Запрос сформирован. \nСообщите название организации менеджеру для регистрации.");
     }
+}
+
+void MainWindow::on_lineEdit_4_returnPressed()
+{
+if (ui->lineEdit_4->text()=="12345")
+{
+    qDebug() << "Пароль верен";
+   ui->pushButton->setEnabled(true);
+   ui->pushButton_2->setEnabled(true);
+   ui->pushButton_3->setEnabled(true);
+   ui->pushButton_4->setEnabled(true);
+   ui->pushButton_5->setEnabled(true);
+   ui->pushButton_6->setEnabled(true);
+   ui->pushButton_7->setEnabled(true);
+   ui->pushButton_8->setEnabled(true);
+   ui->lineEdit->setEnabled(true);
+   ui->lineEdit_2->setEnabled(true);
+   ui->lineEdit_3->setEnabled(true);
+}
+else if (ui->lineEdit_4->text()=="11111")
+{
+    ui->pushButton_8->setEnabled(true);
+}
+
 }

@@ -3,6 +3,7 @@
 #include <QNetworkRequest>
 #include <QFile>
 #include <QDir>
+ #include <QApplication>
 
 Downloader::Downloader(QObject* parent) :
     BaseClass(parent)
@@ -15,6 +16,7 @@ bool Downloader::get(const QString& targetFolder, const QUrl& url)
 {
     if (targetFolder.isEmpty() || url.isEmpty())
     {
+       qDebug() << "Что то не так";
         return false;
     }
 
@@ -28,10 +30,12 @@ bool Downloader::get(const QString& targetFolder, const QUrl& url)
         m_file = nullptr;
         return false;
     }
-
+ (QFile(targetFolder + QDir::separator() + url.fileName())).size();
+   int FileRaz1=m_file->size();
+qDebug () << FileRaz1;
     // Создаём запрос
     QNetworkRequest request(url);
-    // Обязательно разрешаем переходить по редиректам
+    //  Разрешаем переходить по редиректам
     request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
     // Запускаем скачивание
     m_currentReply = m_manager.get(request);
@@ -40,6 +44,13 @@ bool Downloader::get(const QString& targetFolder, const QUrl& url)
     connect(m_currentReply, &QNetworkReply::readyRead, this, &Downloader::onReadyRead);
     connect(m_currentReply, &QNetworkReply::downloadProgress, this, &Downloader::updateDownloadProgress);
     return true;
+   /*
+    while (m_file->size()!=25919028)
+    {
+    qDebug () << FileRaz1;
+    }
+    */
+
 }
 
 void Downloader::onReadyRead()
